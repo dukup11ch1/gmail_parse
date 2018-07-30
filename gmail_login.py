@@ -1,9 +1,6 @@
-import smtplib
-
-def gmail_login(id,pw):
-    server = smtplib.SMTP('smtp.gmail.com',587) #this is gmail 
-    server.ehlo()
-    server.starttls()
-    server.login(id,pw)
-    print 'login success'
-    return server
+import socket
+import imaplib
+def gmail_login(username, password):
+    IMAP_SERVER = imaplib.IMAP4_SSL(str(socket.gethostbyname('imap.gmail.com')),993)
+    IMAP_SERVER.login(username, password)
+    return IMAP_SERVER
