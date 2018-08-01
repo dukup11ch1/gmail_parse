@@ -2,15 +2,9 @@ import imaplib
 import re
 
 class Mail:
-    #imap setting
     IHOSTS={'gmail':['imap.gmail.com',993], 'outlook':['imap-mail.outlook.com',993], 'yahoo':['imap.mail.yahoo.com',993], 'naver':['imap.naver.com',993]}
-    IMAP_HOST=''
-    IMAP_PORT=0
-    
-    #smtp setting
-    SMTP_HOST=''
-    SMTP_PORT=0
-    def __init__(self):
+    SHOSTS={'gmail':['smtp.gmail.com',587], 'outlook':['smtp-mail.outlook.com',587], 'yahoo':['smtp.mail.yahoo.com',465], 'naver':['smtp.naver.com',587]}
+    def __init__(self,host):
         self.user=None
         self.pw=None
         self.token=None
@@ -20,7 +14,12 @@ class Mail:
         self.login=None
         self.mailboxes={}
         self.current_mailbox=None
-    
+
+        self.IMAP_HOST=self.IHOSTS[host][0]
+        self.IMAP_PORT=self.IHOSTS[host][1]
+        self.SMTP_HOST=self.SHOSTS[host][0]
+        self.SMTP_PORT=self.SHOSTS[host][1]
+
     def setting_hosts(self,host,port):
         self.IMAP_HOST=0
 
