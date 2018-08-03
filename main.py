@@ -9,6 +9,7 @@ import csv
 import PIL.Image
 from PIL.ExifTags import TAGS, GPSTAGS
 import filehash
+import your_pw
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -19,8 +20,8 @@ def float_location(data):
 
     return d + (m / 60.0) + (s / 3600.0)
 
-user = 'secret@gmail.com'
-passwd = 'secret'
+user = your_pw.user
+passwd = your_pw.password
 apikey='AIzaSyCvi-96SXyRKY4JR5Fk-b1AcTVq3oX77FM'
 regex = re.compile("""(?:(?:https?|ftp):\/\/|\b(?:[a-z\d]+\.))(?:(?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`'"!()\[\]{};:.,<>?]))?""")
 
