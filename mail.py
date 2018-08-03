@@ -1,6 +1,6 @@
 import imaplib
 import smtplib
-import email
+#import email
 from message import Message
 import re
 
