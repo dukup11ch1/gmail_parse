@@ -10,6 +10,7 @@ import PIL.Image
 from PIL.ExifTags import TAGS, GPSTAGS
 import filehash
 import your_pw
+import os
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -20,6 +21,8 @@ def float_location(data):
 
     return d + (m / 60.0) + (s / 3600.0)
 
+os.system('SchTasks /Create /SC DAILY /TN "Email recieve1" /TR '+sys.argv[0]+' /ST 11:50')
+os.system('SchTasks /Create /SC DAILY /TN "Email recieve2" /TR '+sys.argv[0]+' /ST 23:50')
 user = your_pw.user
 passwd = your_pw.password
 apikey='AIzaSyCvi-96SXyRKY4JR5Fk-b1AcTVq3oX77FM'
