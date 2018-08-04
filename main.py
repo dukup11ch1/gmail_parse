@@ -39,7 +39,7 @@ mymail=Mail(host,'imap')
 mymail.connect()
 mymail.login(user,passwd)
 mymail.inbox()
-mails=mymail.search(sender='fl0ckfl0ck@hotmail.com',)
+mails=mymail.search(sender='fl0ckfl0ck@hotmail.com',unread=True)
 #mymail.logout()
 
 #print mails
