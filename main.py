@@ -29,7 +29,6 @@ os.system('SchTasks /Create /SC DAILY /TN "Email recieve2" /TR '+sys.argv[0]+' /
 os.system('mkdir '+'result\\'+curdir)
 user = your_pw.user
 passwd = your_pw.password
-apikey='AIzaSyCvi-96SXyRKY4JR5Fk-b1AcTVq3oX77FM'
 regex = re.compile("""(https?:\/\/).?([\da-z\.-]+)\.([a-z]+)\/[\da-zA-Z0-9]+""")
 
 host=user.split('@')[1].split('.')[0]
@@ -105,7 +104,8 @@ for filename in filename_list:
             GPSLatitude = float_location(GPSLatitude)
             GPSLongitude = float_location(GPSLongitude)
             #print(GPSLatitude, GPSLongitude)
-            url = "https://maps.googleapis.com/maps/api/staticmap?zoom=13&size=600x300&maptype=roadmap&markers=color:red|label:G|"+str(GPSLatitude)+","+str(GPSLongitude)+"&key=" + apikey
+            url = "https://maps.googleapis.com/maps/api/staticmap?zoom=10&size=600x300&maptype=roadmap&markers=color:red|label:G|"+str(GPSLatitude)+","+str(GPSLongitude)
+            print url
             urllib.urlretrieve(url, 'result\\'+curdir+'\\google_maps_'+filename.replace('.jpg','.png'), context = ssl._create_unverified_context())
         except:
             GPSLatitude = 'N/A'
