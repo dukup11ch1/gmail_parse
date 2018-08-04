@@ -30,7 +30,7 @@ os.system('mkdir '+'result\\'+curdir)
 user = your_pw.user
 passwd = your_pw.password
 apikey='AIzaSyCvi-96SXyRKY4JR5Fk-b1AcTVq3oX77FM'
-regex = re.compile("""(?:(?:https?|ftp):\/\/|\b(?:[a-z\d]+\.))(?:(?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`'"!()\[\]{};:.,<>?]))?""")
+regex = re.compile("""(https?:\/\/).?([\da-z\.-]+)\.([a-z]+)\/[\da-zA-Z0-9]+""")
 
 host=user.split('@')[1].split('.')[0]
 print host
