@@ -38,7 +38,7 @@ mymail=Mail(host,'imap')
 mymail.connect()
 mymail.login(user,passwd)
 mymail.inbox()
-mails=mymail.search(sender='fl0ckfl0ck@hotmail.com',unread=True)
+mails=mymail.search(sender='fl0ckfl0ck@hotmail.com')
 #mymail.logout()
 
 #print mails
@@ -105,7 +105,7 @@ for filename in filename_list:
             GPSLongitude = float_location(GPSLongitude)
             #print(GPSLatitude, GPSLongitude)
             url = "https://maps.googleapis.com/maps/api/staticmap?zoom=10&size=600x300&maptype=roadmap&markers=color:red|label:G|"+str(GPSLatitude)+","+str(GPSLongitude)
-            print url
+            #print url
             urllib.urlretrieve(url, 'result\\'+curdir+'\\google_maps_'+filename.replace('.jpg','.png'), context = ssl._create_unverified_context())
         except:
             GPSLatitude = 'N/A'
