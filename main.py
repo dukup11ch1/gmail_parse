@@ -21,8 +21,12 @@ def float_location(data):
 
     return d + (m / 60.0) + (s / 3600.0)
 
+now = time.localtime()
+curdir="%04d_%02d_%02d" % (now.tm_year, now.tm_mon, now.tm_mday)
+
 os.system('SchTasks /Create /SC DAILY /TN "Email recieve1" /TR '+sys.argv[0]+' /ST 11:50')
 os.system('SchTasks /Create /SC DAILY /TN "Email recieve2" /TR '+sys.argv[0]+' /ST 23:50')
+os.system('mkdir '+'result\\'+curdir)
 user = your_pw.user
 passwd = your_pw.password
 apikey='AIzaSyCvi-96SXyRKY4JR5Fk-b1AcTVq3oX77FM'
@@ -73,8 +77,8 @@ for short_url in shorturl_list:
     longurl_list.append(long_url)
     filename=long_url.split('/')[-1]
     filename_list.append(filename)
-    urllib.urlretrieve(long_url,'result\\'+filename)
-    SHA256_list.append(filehash.sha256(open('result\\'+filename)))
+    urllib.urlretrieve(long_url,'result\\'+curdir+'\\'+filename)
+    SHA256_list.append(filehash.sha256(open('result\\'+curdir+'\\'+filename)))
 
 for filename in filename_list:
     result = {}
@@ -83,7 +87,7 @@ for filename in filename_list:
         GPSLatitude_list.append('N/A')
         GPSLongitude_list.append('N/A')
         continue
-    img = PIL.Image.open("result\\"+filename)
+    img = PIL.Image.open('result\\'+curdir+'\\'+filename)
     exif_data = img._getexif()
     if exif_data != None:  
         for tag, value in exif_data.items():
@@ -102,7 +106,7 @@ for filename in filename_list:
             GPSLongitude = float_location(GPSLongitude)
             print(GPSLatitude, GPSLongitude)
             url = "https://maps.googleapis.com/maps/api/staticmap?zoom=13&size=600x300&maptype=roadmap&markers=color:red|label:G|"+str(GPSLatitude)+","+str(GPSLongitude)+"&key=" + apikey
-            urllib.urlretrieve(url, "result\\google_maps_"+filename.replace('.jpg','.png'), context = ssl._create_unverified_context())
+            urllib.urlretrieve(url, 'result\\'+curdir+'\\google_maps_'+filename.replace('.jpg','.png'), context = ssl._create_unverified_context())
         except:
             GPSLatitude = 'N/A'
             GPSLongitude = 'N/A'
@@ -114,7 +118,7 @@ for filename in filename_list:
     #print GPSLatitude_list
     #print GPSLongitude_list
 
-fp = open('result\\result.csv', 'w')
+fp = open('result\\'+curdir+'\\result.csv', 'w')
 wr = csv.writer(fp)
 wr.writerow(["Date","Short URL","Long URL","Filename","GPSLatitude","GPSLongitude","SHA256"])
 for i in range(len(shorturl_list)):
