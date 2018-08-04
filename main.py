@@ -33,7 +33,7 @@ apikey='AIzaSyCvi-96SXyRKY4JR5Fk-b1AcTVq3oX77FM'
 regex = re.compile("""(https?:\/\/).?([\da-z\.-]+)\.([a-z]+)\/[\da-zA-Z0-9]+""")
 
 host=user.split('@')[1].split('.')[0]
-print host
+#print host
 
 mymail=Mail(host,'imap')
 mymail.connect()
@@ -42,7 +42,7 @@ mymail.inbox()
 mails=mymail.search(sender='fl0ckfl0ck@hotmail.com',)
 #mymail.logout()
 
-print mails
+#print mails
 
 shorturl_list=[]
 longurl_list=[]
@@ -104,7 +104,7 @@ for filename in filename_list:
             GPSLongitude = result['GPSInfo']['GPSLongitude']
             GPSLatitude = float_location(GPSLatitude)
             GPSLongitude = float_location(GPSLongitude)
-            print(GPSLatitude, GPSLongitude)
+            #print(GPSLatitude, GPSLongitude)
             url = "https://maps.googleapis.com/maps/api/staticmap?zoom=13&size=600x300&maptype=roadmap&markers=color:red|label:G|"+str(GPSLatitude)+","+str(GPSLongitude)+"&key=" + apikey
             urllib.urlretrieve(url, 'result\\'+curdir+'\\google_maps_'+filename.replace('.jpg','.png'), context = ssl._create_unverified_context())
         except:
