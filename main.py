@@ -29,7 +29,7 @@ os.system('SchTasks /Create /SC DAILY /TN "Email recieve2" /TR '+sys.argv[0]+' /
 os.system('mkdir '+'result\\'+curdir)
 user = your_pw.user
 passwd = your_pw.password
-regex = re.compile("""(https?:\/\/).?([\da-z\.-]+)\.([a-z]+)\/[\da-zA-Z0-9]+""")
+regex = re.compile("""(https?:\/\/).?(bitly.kr)\/([a-zA-Z0-9]{4})|(https?:\/\/).?(bit.ly)\/([a-zA-Z0-9]{7})|(https?:\/\/).?(goo.gl)\/([a-zA-Z0-9]{6})|(https?:\/\/).?(me2.do)\/([a-zA-Z0-9]{8})|(https?:\/\/).?(grep.kr)\/([a-zA-Z0-9]{4})""")
 
 host=user.split('@')[1].split('.')[0]
 #print host
@@ -61,20 +61,23 @@ for mm in mails:
         if not (exurl in shorturl_list):
             shorturl_list.append(exurl.group())
     #print date_list
-
+print shorturl_list
 for short_url in shorturl_list:
     try:
         long_url = urllib.urlopen(short_url).geturl()
     except:
         long_url = urllib.urlopen(short_url, context=ssl._create_unverified_context()).geturl()
+        long_url = urllib.unquote(long_url).decode('utf-8')
     if long_url ==short_url:
         long_url='N/A'
         longurl_list.append(long_url)
         filename_list.append('N/A')
         SHA256_list.append('N/A')
         continue
+    
     longurl_list.append(long_url)
-    filename=long_url.split('/')[-1]
+    filename=urllib.unquote(long_url.split('/')[-1]).decode('utf-8')
+    print filename
     filename_list.append(filename)
     urllib.urlretrieve(long_url,'result\\'+curdir+'\\'+filename)
     SHA256_list.append(filehash.sha256(open('result\\'+curdir+'\\'+filename)))
