@@ -29,7 +29,7 @@ os.system('SchTasks /Create /SC DAILY /TN "Email recieve2" /TR '+sys.argv[0]+' /
 os.system('mkdir '+'result\\'+curdir)
 user = your_pw.user
 passwd = your_pw.password
-regex = re.compile("""(https?:\/\/).?(bitly.kr)\/([a-zA-Z0-9]{4})|(https?:\/\/).?(bit.ly)\/([a-zA-Z0-9]{7})|(https?:\/\/).?(goo.gl)\/([a-zA-Z0-9]{6})|(https?:\/\/).?(me2.do)\/([a-zA-Z0-9]{8})|(https?:\/\/).?(grep.kr)\/([a-zA-Z0-9]{4})""")
+regex = re.compile("""(https?:\/\/).?(bitly.kr)\/([a-zA-Z0-9]{4})|(https?:\/\/).?(bit.ly)\/([a-zA-Z0-9]{7})|(https?:\/\/).?(goo.gl)\/([a-zA-Z0-9]{6})|(https?:\/\/).?(me2.do)\/([a-zA-Z0-9]{8})|(https?:\/\/).?(grep.kr)\/([a-zA-Z0-9]{4})|(https?:\/\/).?(hoy.kr)\/([a-zA-Z0-9]{4})""")
 
 host=user.split('@')[1].split('.')[0]
 #print host
@@ -38,7 +38,7 @@ mymail=Mail(host,'imap')
 mymail.connect()
 mymail.login(user,passwd)
 mymail.inbox()
-mails=mymail.search(sender='fl0ckfl0ck@hotmail.com',unread=True)
+mails=mymail.search(sender='fl0ckfl0ck@hotmail.com')
 #mymail.logout()
 
 #print mails
@@ -61,7 +61,7 @@ for mm in mails:
         if not (exurl in shorturl_list):
             shorturl_list.append(exurl.group())
     #print date_list
-print shorturl_list
+#print shorturl_list
 for short_url in shorturl_list:
     try:
         long_url = urllib.urlopen(short_url).geturl()
@@ -77,7 +77,8 @@ for short_url in shorturl_list:
     
     longurl_list.append(long_url)
     filename=urllib.unquote(long_url.split('/')[-1]).decode('utf-8')
-    print filename
+    #print filename
+    #filename=filename.encode('utf-8')
     filename_list.append(filename)
     urllib.urlretrieve(long_url,'result\\'+curdir+'\\'+filename)
     SHA256_list.append(filehash.sha256(open('result\\'+curdir+'\\'+filename)))
