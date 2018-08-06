@@ -130,7 +130,7 @@ for i in range(len(GPSLatitude_list)):
         continue
     maker_list=maker_list+str(GPSLatitude_list[i])+','+str(GPSLongitude_list[i])+'|'
 
-url = "https://maps.googleapis.com/maps/api/staticmap?zoom=3&size=600x300&maptype=roadmap&markers=color:red|label:G|"+maker_list
+url = "https://maps.googleapis.com/maps/api/staticmap?zoom=1&size=600x300&maptype=roadmap&markers=color:red|label:G|"+maker_list
 #print url
 urllib.urlretrieve(url, 'result\\'+curdir+'\\google_maps_result.png', context = ssl._create_unverified_context())
 
