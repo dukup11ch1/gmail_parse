@@ -10,6 +10,7 @@ import PIL.Image
 from PIL.ExifTags import TAGS, GPSTAGS
 import filehash
 import your_pw
+import unicodedata
 import os
 
 reload(sys)
