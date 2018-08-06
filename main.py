@@ -83,7 +83,7 @@ for short_url in shorturl_list:
     #filename=filename.encode('utf-8')
     filename_list.append(filename)
     urllib.urlretrieve(long_url,'result\\'+curdir+'\\'+filename)
-    SHA256_list.append(filehash.sha256(open('result\\'+curdir+'\\'+filename)))
+    SHA256_list.append(filehash.sha256('result\\'+curdir+'\\'+filename))
 
 for filename in filename_list:
     result = {}

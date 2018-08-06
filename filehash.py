@@ -1,15 +1,22 @@
 import hashlib
-def md5(fp):
-    hash=hashlib.md5()
-    hash.update(fp.read())
+
+def sha1(fname):
+    fp=open(fname,'rb')
+    data=fp.read()
+    fp.close()
+    hash=hashlib.sha1(data)
     return hash.hexdigest()
 
-def sha1(fp):
-    hash=hashlib.sha1()
-    hash.update(fp.read())
+def md5(fname):
+    fp=open(fname,'rb')
+    data=fp.read()
+    fp.close()
+    hash=hashlib.sha1(data)
     return hash.hexdigest()
 
-def sha256(fp):
-    hash=hashlib.sha256()
-    hash.update(fp.read())
+def sha256(fname):
+    fp=open(fname,'rb')
+    data=fp.read()
+    fp.close()
+    hash=hashlib.sha256(data)
     return hash.hexdigest()
