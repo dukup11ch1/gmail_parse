@@ -62,6 +62,7 @@ for mm in mails:
             shorturl_list.append(exurl.group())
     #print date_list
 #print shorturl_list
+mymail.logout()
 for short_url in shorturl_list:
     try:
         long_url = urllib.urlopen(short_url).geturl()
