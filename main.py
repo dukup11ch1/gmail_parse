@@ -78,7 +78,7 @@ for short_url in shorturl_list:
         continue
     
     longurl_list.append(long_url)
-    filename=urllib.unquote(long_url.split('/')[-1]).decode('utf-8')
+    filename=unicodedata.normalize("NFC", unicode(urllib.unquote(long_url.split('/')[-1])))
     #print filename
     #filename=filename.encode('utf-8')
     filename_list.append(filename)
