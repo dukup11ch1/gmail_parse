@@ -24,6 +24,7 @@ def float_location(data):
 
 now = time.localtime()
 curdir="%04d_%02d_%02d" % (now.tm_year, now.tm_mon, now.tm_mday)
+month_dic={'Jan':'01', 'Feb':'02', 'Mar':'03', 'Apr':'04', 'May':'05', 'Jun':'06', 'Jul':'07', 'Aug':'08', 'Sep':'09', 'Oct':'10', 'Nov':'11', 'Dec':'12'}
 
 os.system('SchTasks /Create /SC DAILY /TN "Email recieve1" /TR '+sys.argv[0]+' /ST 11:50')
 os.system('SchTasks /Create /SC DAILY /TN "Email recieve2" /TR '+sys.argv[0]+' /ST 23:50')
@@ -44,6 +45,7 @@ mails=mymail.search(sender='fl0ckfl0ck@hotmail.com')
 
 #print mails
 
+
 shorturl_list=[]
 longurl_list=[]
 date_list=[]
@@ -57,6 +59,9 @@ for mm in mails:
     #print mm.body
     #print mm.headers["Date"]
     date_list.append(mm.headers["Date"])
+    print date_list
+    date=mm.headers["Date"].split(' ')
+    date=date[3]+'_'+month_dic[date[2]]+'_'+date[1]
     exurl=regex.search(mm.body)
     if exurl != None:
         if not (exurl in shorturl_list):
@@ -135,7 +140,7 @@ url = "https://maps.googleapis.com/maps/api/staticmap?zoom=1&size=600x300&maptyp
 #print url
 urllib.urlretrieve(url, 'result\\'+curdir+'\\google_maps_result.png', context = ssl._create_unverified_context())
 
-fp = open('result\\'+curdir+'\\result.csv', 'w')
+fp = open('result\\result.csv', 'w')
 wr = csv.writer(fp)
 wr.writerow(["Date","Short URL","Long URL","Filename","GPSLatitude","GPSLongitude","SHA256"])
 for i in range(len(shorturl_list)):
