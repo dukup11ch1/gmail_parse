@@ -20,3 +20,10 @@ def sha256(fname):
     fp.close()
     hash=hashlib.sha256(data)
     return hash.hexdigest()
+
+def sha512(fname):
+    fp=open(fname,'rb')
+    data=fp.read()
+    fp.close()
+    hash=hashlib.sha512(data)
+    return hash.hexdigest()
