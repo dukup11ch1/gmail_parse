@@ -81,7 +81,7 @@ class Data:
         self.date=date
         self.curdir=curdir
         return
-            
+    
     def make_data(self):
         import urllib
         import ssl
