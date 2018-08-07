@@ -76,9 +76,10 @@ class Print:
         urllib.urlretrieve(url, 'result\\google_maps_result.png', context = ssl._create_unverified_context())
 
 class Data:
-    def __init__(self,date,short_url):
+    def __init__(self,date,short_url,curdir):
         self.short_url=short_url
         self.date=date
+        self.curdir=curdir
         return
             
     def make_data(self):
@@ -101,15 +102,14 @@ class Data:
             GPSLatitude='N/A'
             GPSLongitude='N/A'
             return Fileinfo(self.short_url,long_url,self.date,filename,GPSLatitude,GPSLongitude,SHA256)
-        curdir=self.date
         filename=unicodedata.normalize("NFC", unicode(urllib.unquote(long_url.split('/')[-1])))
         #print filename
         #filename=filename.encode('utf-8')
-        urllib.urlretrieve(long_url,'result\\'+curdir+'\\'+filename)
-        SHA256=filehash.sha256('result\\'+curdir+'\\'+filename)
+        urllib.urlretrieve(long_url,'result\\'+self.curdir+'\\'+filename)
+        SHA256=filehash.sha256('result\\'+self.curdir+'\\'+filename)
         result = {}
         GPS_result = {}
-        img = PIL.Image.open('result\\'+curdir+'\\'+filename)
+        img = PIL.Image.open('result\\'+self.curdir+'\\'+filename)
         exif_data = img._getexif()
         if exif_data != None:  
             for tag, value in exif_data.items():

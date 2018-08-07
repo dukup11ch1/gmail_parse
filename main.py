@@ -44,16 +44,17 @@ for mm in mails:
     mm.fetch()
     #print mm.body
     #print mm.headers["Date"]
-    date=mm.headers["Date"].split(' ')
-    day=('%02d'%int(date[1]))
-    date=date[3]+'_'+month_dic[date[2]]+'_'+day
-    os.system('mkdir '+'result\\'+date)
+    date=mm.headers["Date"]
+    date2=date.split(' ')
+    day=('%02d'%int(date2[1]))
+    curdir=date2[3]+'_'+month_dic[date2[2]]+'_'+day
+    os.system('mkdir '+'result\\'+curdir)
     exurl=regex.search(mm.body)
     if exurl != None:
         if not (exurl in shorturl_list):
             short_url=exurl.group()
             shorturl_list.append(short_url)
-    a=Data(date,short_url)
+    a=Data(date,short_url,curdir)
     data.append(a.make_data())
     #print GPSLatitude_list
     #print GPSLongitude_list
