@@ -1,9 +1,9 @@
 #-*-coding: utf-8-*-
 import sys
 from mail import Mail
+from data import *
 import ssl
 import re
-import time
 import urllib
 import csv
 import PIL.Image
@@ -22,13 +22,11 @@ def float_location(data):
 
     return d + (m / 60.0) + (s / 3600.0)
 
-now = time.localtime()
-curdir="%04d_%02d_%02d" % (now.tm_year, now.tm_mon, now.tm_mday)
 month_dic={'Jan':'01', 'Feb':'02', 'Mar':'03', 'Apr':'04', 'May':'05', 'Jun':'06', 'Jul':'07', 'Aug':'08', 'Sep':'09', 'Oct':'10', 'Nov':'11', 'Dec':'12'}
 
 os.system('SchTasks /Create /SC DAILY /TN "Email recieve1" /TR '+sys.argv[0]+' /ST 11:50')
 os.system('SchTasks /Create /SC DAILY /TN "Email recieve2" /TR '+sys.argv[0]+' /ST 23:50')
-os.system('mkdir '+'result\\'+curdir)
+
 user = your_pw.user
 passwd = your_pw.password
 regex = re.compile("""(https?:\/\/).?(bitly.kr)\/([a-zA-Z0-9]{4})|(https?:\/\/).?(bit.ly)\/([a-zA-Z0-9]{7})|(https?:\/\/).?(goo.gl)\/([a-zA-Z0-9]{6})|(https?:\/\/).?(me2.do)\/([a-zA-Z0-9]{8})|(https?:\/\/).?(grep.kr)\/([a-zA-Z0-9]{4})|(https?:\/\/).?(hoy.kr)\/([a-zA-Z0-9]{4})""")
@@ -44,32 +42,22 @@ mails=mymail.search(sender='fl0ckfl0ck@hotmail.com')
 #mymail.logout()
 
 #print mails
-
-
 shorturl_list=[]
-longurl_list=[]
-date_list=[]
-filename_list=[]
-GPSLatitude_list=[]
-GPSLongitude_list=[]
-SHA256_list=[]
+data=[]
 
 for mm in mails:
     mm.fetch()
     #print mm.body
     #print mm.headers["Date"]
-    date_list.append(mm.headers["Date"])
-    print date_list
     date=mm.headers["Date"].split(' ')
-    date=date[3]+'_'+month_dic[date[2]]+'_'+date[1]
+    day=('%02d'%int(date[1]))
+    date=date[3]+'_'+month_dic[date[2]]+'_'+day
+    os.system('mkdir '+'result\\'+date)
     exurl=regex.search(mm.body)
     if exurl != None:
         if not (exurl in shorturl_list):
-            shorturl_list.append(exurl.group())
-    #print date_list
-#print shorturl_list
-mymail.logout()
-for short_url in shorturl_list:
+            short_url=exurl.group()
+            shorturl_list.append(short_url)
     try:
         long_url = urllib.urlopen(short_url).geturl()
     except:
@@ -77,26 +65,20 @@ for short_url in shorturl_list:
         long_url = urllib.unquote(long_url).decode('utf-8')
     if long_url ==short_url:
         long_url='N/A'
-        longurl_list.append(long_url)
-        filename_list.append('N/A')
-        SHA256_list.append('N/A')
+        filename='N/A'
+        SHA256='N/A'
+        GPSLatitude='N/A'
+        GPSLongitude='N/A'
+        data.append(Fileinfo(short_url,long_url,date,filename,GPSLatitude,GPSLongitude,SHA256))
         continue
-    
-    longurl_list.append(long_url)
+    curdir=date
     filename=unicodedata.normalize("NFC", unicode(urllib.unquote(long_url.split('/')[-1])))
     #print filename
     #filename=filename.encode('utf-8')
-    filename_list.append(filename)
     urllib.urlretrieve(long_url,'result\\'+curdir+'\\'+filename)
-    SHA256_list.append(filehash.sha256('result\\'+curdir+'\\'+filename))
-
-for filename in filename_list:
+    SHA256=filehash.sha256('result\\'+curdir+'\\'+filename)
     result = {}
     GPS_result = {}
-    if filename =='N/A':
-        GPSLatitude_list.append('N/A')
-        GPSLongitude_list.append('N/A')
-        continue
     img = PIL.Image.open('result\\'+curdir+'\\'+filename)
     exif_data = img._getexif()
     if exif_data != None:  
@@ -121,8 +103,7 @@ for filename in filename_list:
     else:
         GPSLatitude = 'N/A'
         GPSLongitude = 'N/A'
-    GPSLatitude_list.append(GPSLatitude)
-    GPSLongitude_list.append(GPSLongitude)
+    data.append(Fileinfo(short_url,long_url,date,filename,GPSLatitude,GPSLongitude,SHA256))
     #print GPSLatitude_list
     #print GPSLongitude_list
 """
@@ -131,17 +112,17 @@ url = "https://maps.googleapis.com/maps/api/staticmap?zoom=3&size=600x300&maptyp
 urllib.urlretrieve(url, 'result\\'+curdir+'\\google_maps_'+filename.replace('.jpg','.png'), context = ssl._create_unverified_context())
 """
 maker_list=""
-for i in range(len(GPSLatitude_list)):
-    if GPSLatitude_list[i]=="N/A":
+for GPS in data:
+    if GPS.GPSLatitude_value()=="N/A":
         continue
-    maker_list=maker_list+str(GPSLatitude_list[i])+','+str(GPSLongitude_list[i])+'|'
+    maker_list=maker_list+str(GPS.GPSLatitude_value())+','+str(GPS.GPSLongitude_value())+'|'
 
 url = "https://maps.googleapis.com/maps/api/staticmap?zoom=1&size=600x300&maptype=roadmap&markers=color:red|label:G|"+maker_list
 #print url
-urllib.urlretrieve(url, 'result\\'+curdir+'\\google_maps_result.png', context = ssl._create_unverified_context())
+urllib.urlretrieve(url, 'result\\google_maps_result.png', context = ssl._create_unverified_context())
 
 fp = open('result\\result.csv', 'w')
 wr = csv.writer(fp)
 wr.writerow(["Date","Short URL","Long URL","Filename","GPSLatitude","GPSLongitude","SHA256"])
-for i in range(len(shorturl_list)):
-    wr.writerow([date_list[i],shorturl_list[i],longurl_list[i],filename_list[i],GPSLatitude_list[i],GPSLongitude_list[i],SHA256_list[i]])
+for d in data:
+    wr.writerow([d.date_value(),d.shorturl_value(),d.longurl_value(),d.filename_value(),d.GPSLatitude_value(),d.GPSLongitude_value(),d.SHA256_value()])
