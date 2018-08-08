@@ -38,6 +38,7 @@ mails=mymail.search(sender='fl0ckfl0ck@hotmail.com')
 
 #print mails
 shorturl_list=[]
+datat=[]
 data=[]
 
 for mm in mails:
@@ -48,16 +49,18 @@ for mm in mails:
     date2=date.split(' ')
     day=('%02d'%int(date2[1]))
     curdir=date2[3]+'_'+month_dic[date2[2]]+'_'+day
-    os.system('mkdir '+'result\\'+curdir)
     exurl=regex.search(mm.body)
     if exurl != None:
         if not (exurl in shorturl_list):
+            os.system('mkdir '+'result\\'+curdir)
             short_url=exurl.group()
             shorturl_list.append(short_url)
-    a=Data(date,short_url,curdir)
-    data.append(a.make_data())
+            datat.append((date,short_url,curdir))
     #print GPSLatitude_list
     #print GPSLongitude_list
+for date,short_url,curdir in datat:
+    a=Data(date,short_url,curdir)
+    data.append(a.make_data())
 
 pr=Print(data)
 pr.map()
