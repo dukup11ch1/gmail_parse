@@ -56,7 +56,10 @@ class Print:
 
     def csv(self):
         import csv
-        fp = open('result\\result.csv', 'w')
+        import sys
+        reload(sys)
+        sys.setdefaultencoding("utf-8")
+        fp = open('result\\result.csv','wb')
         wr = csv.writer(fp)
         wr.writerow(["Date","Short URL","Long URL","Filename","GPSLatitude","GPSLongitude","SHA256"])
         for d in self.data:
@@ -90,6 +93,9 @@ class Data:
         import PIL.Image
         from PIL.ExifTags import TAGS, GPSTAGS
         import dataconvert
+        import sys
+        reload(sys)
+        sys.setdefaultencoding("utf-8")
         try:
             long_url = urllib.urlopen(self.short_url).geturl()
         except:
