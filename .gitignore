@@ -9,3 +9,5 @@ mail.spec
 main.spec
 dataconvert.pyc
 .vscode
+hello.cpp
+hello.exe
