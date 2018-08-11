@@ -7,8 +7,6 @@ from email.header import decode_header, make_header
 from imaplib import ParseFlags
 
 class Message():
-
-
     def __init__(self, mailbox, uid):
         self.uid = uid
         self.mailbox = mailbox if mailbox else None
@@ -35,80 +33,6 @@ class Message():
         self.message_id = None
  
         self.attachments = None
-        
-
-
-    def is_read(self):
-        return ('\\Seen' in self.flags)
-
-    def read(self):
-        flag = '\\Seen'
-        self.mailbox.proto.uid('STORE', self.uid, '+FLAGS', flag)
-        if flag not in self.flags: self.flags.append(flag)
-
-    def unread(self):
-        flag = '\\Seen'
-        self.mailbox.proto.uid('STORE', self.uid, '-FLAGS', flag)
-        if flag in self.flags: self.flags.remove(flag)
-
-    def is_starred(self):
-        return ('\\Flagged' in self.flags)
-
-    def star(self):
-        flag = '\\Flagged'
-        self.mailbox.proto.uid('STORE', self.uid, '+FLAGS', flag)
-        if flag not in self.flags: self.flags.append(flag)
-
-    def unstar(self):
-        flag = '\\Flagged'
-        self.mailbox.proto.uid('STORE', self.uid, '-FLAGS', flag)
-        if flag in self.flags: self.flags.remove(flag)
-
-    def is_draft(self):
-        return ('\\Draft' in self.flags)
-
-    def has_label(self, label):
-        full_label = '%s' % label
-        return (full_label in self.labels)
-
-    def add_label(self, label):
-        full_label = '%s' % label
-        self.mailbox.proto.uid('STORE', self.uid, '+X-GM-LABELS', full_label)
-        if full_label not in self.labels: self.labels.append(full_label)
-
-    def remove_label(self, label):
-        full_label = '%s' % label
-        self.mailbox.proto.uid('STORE', self.uid, '-X-GM-LABELS', full_label)
-        if full_label in self.labels: self.labels.remove(full_label)
-
-
-    def is_deleted(self):
-        return ('\\Deleted' in self.flags)
-
-    def delete(self):
-        flag = '\\Deleted'
-        self.mailbox.proto.uid('STORE', self.uid, '+FLAGS', flag)
-        if flag not in self.flags: self.flags.append(flag)
-
-        trash = '[Gmail]/Trash' if '[Gmail]/Trash' in self.mailbox.labels() else '[Gmail]/Bin'
-        if self.mailbox.name not in ['[Gmail]/Bin', '[Gmail]/Trash']:
-            self.move_to(trash)
-
-    # def undelete(self):
-    #     flag = '\\Deleted'
-    #     self.mailbox.proto.uid('STORE', self.uid, '-FLAGS', flag)
-    #     if flag in self.flags: self.flags.remove(flag)
-
-
-    def move_to(self, name):
-        self.mailbox.copy(self.uid, name, self.mailbox.name)
-        if name not in ['[Gmail]/Bin', '[Gmail]/Trash']:
-            self.delete()
-
-
-
-    def archive(self):
-        self.move_to('[Gmail]/All Mail')
 
     def parse_headers(self, message):
         hdrs = {}
@@ -118,7 +42,6 @@ class Message():
 
     def parse_flags(self, headers):
         return list(ParseFlags(headers))
-        # flags = re.search(r'FLAGS \(([^\)]*)\)', headers).groups(1)[0].split(' ')
 
     def parse_labels(self, headers):
         if re.search(r'X-GM-LABELS \(([^\)]+)\)', headers):
@@ -165,8 +88,6 @@ class Message():
         if re.search(r'X-GM-MSGID (\d+)', raw_headers):
             self.message_id = re.search(r'X-GM-MSGID (\d+)', raw_headers).groups(1)[0]
 
-        
-        # Parse attachments into attachment objects array for this message
         self.attachments = [
             Attachment(attachment) for attachment in self.message._payload
                 if not isinstance(attachment, basestring) and attachment.get('Content-Disposition') is not None
@@ -181,13 +102,11 @@ class Message():
 
         return self.message
 
-    # returns a list of fetched messages (both sent and received) in chronological order
     def fetch_thread(self):
         self.fetch()
         original_mailbox = self.mailbox
         self.mailbox.use_mailbox(original_mailbox.name)
 
-        # fetch and cache messages from inbox or other received mailbox
         response, results = self.mailbox.proto.uid('SEARCH', None, '(X-GM-THRID ' + self.thread_id + ')')
         received_messages = {}
         uids = results[0].split(' ')
@@ -196,7 +115,6 @@ class Message():
             self.mailbox.fetch_multiple_messages(received_messages)
             self.mailbox.messages.update(received_messages)
 
-        # fetch and cache messages from 'sent'
         self.mailbox.use_mailbox('[Gmail]/Sent Mail')
         response, results = self.mailbox.proto.uid('SEARCH', None, '(X-GM-THRID ' + self.thread_id + ')')
         sent_messages = {}
@@ -208,7 +126,6 @@ class Message():
 
         self.mailbox.use_mailbox(original_mailbox.name)
 
-        # combine and sort sent and received messages
         return sorted(dict(received_messages.items() + sent_messages.items()).values(), key=lambda m: m.sent_at)
 
 
@@ -216,17 +133,13 @@ class Attachment:
 
     def __init__(self, attachment):
         self.name = attachment.get_filename()
-        # Raw file data
         self.payload = attachment.get_payload(decode=True)
-        # Filesize in kilobytes
         self.size = int(round(len(self.payload)/1000.0))
 
     def save(self, path=None):
         if path is None:
-            # Save as name of attachment if there is no path specified
             path = self.name
         elif os.path.isdir(path):
-            # If the path is a directory, save as name of attachment in that directory
             path = os.path.join(path, self.name)
 
         with open(path, 'wb') as f:
