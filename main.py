@@ -19,8 +19,8 @@ sys.setdefaultencoding("utf-8")
 
 month_dic={'Jan':'01', 'Feb':'02', 'Mar':'03', 'Apr':'04', 'May':'05', 'Jun':'06', 'Jul':'07', 'Aug':'08', 'Sep':'09', 'Oct':'10', 'Nov':'11', 'Dec':'12'}
 
-os.system('SchTasks /Create /SC DAILY /TN "Email recieve1" /TR '+str(sys.argv[0])+' /ST 11:50')
-os.system('SchTasks /Create /SC DAILY /TN "Email recieve2" /TR '+str(sys.argv[0])+' /ST 23:50')
+os.system('SchTasks /Create /SC DAILY /TN "Email recieve1" /TR "'+str(sys.argv[0])+'" /ST 11:50')
+os.system('SchTasks /Create /SC DAILY /TN "Email recieve2" /TR "'+str(sys.argv[0])+'" /ST 23:50')
 
 user = your_pw.user
 passwd = your_pw.password

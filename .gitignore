@@ -11,3 +11,5 @@ dataconvert.pyc
 .vscode
 hello.cpp
 hello.exe
+build
+dist
