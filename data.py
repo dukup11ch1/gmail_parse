@@ -74,7 +74,7 @@ class Print:
                 continue
             maker_list=maker_list+str(GPS.GPSLatitude_value())+','+str(GPS.GPSLongitude_value())+'|'
 
-        url = "https://maps.googleapis.com/maps/api/staticmap?zoom=1&size=600x300&maptype=roadmap&markers=color:red|"+maker_list
+        url = "https://maps.googleapis.com/maps/api/staticmap?size=600x300&maptype=roadmap&markers=color:red|"+maker_list
         urllib.urlretrieve(url, 'result\\google_maps_result.png', context = ssl._create_unverified_context())
 
 class Data:
