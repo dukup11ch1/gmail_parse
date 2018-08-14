@@ -62,6 +62,8 @@ for date,short_url,curdir in datat:
     a=Data(date,short_url,curdir)
     data.append(a.make_data())
 
+for td in data:
+    pr=Print(td)
+    pr.csv()
 pr=Print(data)
 pr.map()
-pr.csv()

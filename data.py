@@ -1,5 +1,6 @@
 class Fileinfo:
-    def __init__(self,shorturl,longurl,date,filename,GPSLatitude,GPSLongitude,SHA256):
+    def __init__(self,dir,shorturl,longurl,date,filename,GPSLatitude,GPSLongitude,SHA256):
+        self.dir=dir
         self.shorturl=shorturl
         self.longurl=longurl
         self.date=date
@@ -8,6 +9,12 @@ class Fileinfo:
         self.GPSLongitude=GPSLongitude
         self.SHA256=SHA256
     
+    def dir_value(self,value=None):
+        if value != None:
+            self.dir=dir
+            return
+        return self.dir
+
     def shorturl_value(self,value=None):
         if value != None:
             self.shorturl=value
@@ -59,11 +66,17 @@ class Print:
         import sys
         reload(sys)
         sys.setdefaultencoding("utf-8")
-        fp = open('result\\result.csv','wb')
+        try:
+            fp = open('result\\'+self.data.dir_value()+'\\result.csv','rb')
+            fp.close()
+        except:
+            fp = open('result\\'+self.data.dir_value()+'\\result.csv','wb')
+            wr = csv.writer(fp)
+            wr.writerow(["Date","Short URL","Long URL","Filename","GPSLatitude","GPSLongitude","SHA256"])
+            fp.close()
+        fp = open('result\\'+self.data.dir_value()+'\\result.csv','ab')
         wr = csv.writer(fp)
-        wr.writerow(["Date","Short URL","Long URL","Filename","GPSLatitude","GPSLongitude","SHA256"])
-        for d in self.data:
-            wr.writerow([d.date_value(),d.shorturl_value(),d.longurl_value(),d.filename_value(),d.GPSLatitude_value(),d.GPSLongitude_value(),d.SHA256_value()])
+        wr.writerow([self.data.date_value(),self.data.shorturl_value(),self.data.longurl_value(),self.data.filename_value(),self.data.GPSLatitude_value(),self.data.GPSLongitude_value(),self.data.SHA256_value()])
     
     def map(self):
         import urllib
@@ -106,7 +119,7 @@ class Data:
             SHA256='N/A'
             GPSLatitude='N/A'
             GPSLongitude='N/A'
-            return Fileinfo(self.short_url,long_url,self.date,filename,GPSLatitude,GPSLongitude,SHA256)
+            return Fileinfo(self.curdir,self.short_url,long_url,self.date,filename,GPSLatitude,GPSLongitude,SHA256)
         filename=unicodedata.normalize("NFC", unicode(urllib.unquote(long_url.split('/')[-1])))
         #print filename
         #filename=filename.encode('utf-8')
@@ -138,4 +151,4 @@ class Data:
         else:
             GPSLatitude = 'N/A'
             GPSLongitude = 'N/A'
-        return Fileinfo(self.short_url,long_url,self.date,filename,GPSLatitude,GPSLongitude,SHA256)
+        return Fileinfo(self.curdir,self.short_url,long_url,self.date,filename,GPSLatitude,GPSLongitude,SHA256)
